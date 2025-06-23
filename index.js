@@ -51,8 +51,10 @@ const ccToMarkdownPlugin = {
           if (inCue) {
             // Remove HTML-like tags (e.g., <c>, </c>) and other markup
             let cleanedLine = line.replace(/<[^>]+(>|$)/g, '');
+            // Remove &nbsp; specifically
+            cleanedLine = cleanedLine.replace(/&nbsp;/g, ' ');
             // Remove any additional VTT-specific formatting or annotations
-            cleanedLine = cleanedLine.replace(/&[^;]+;/g, ''); // Remove HTML entities if any
+            cleanedLine = cleanedLine.replace(/&[^;]+;/g, '');
             // Skip lines that are just metadata or empty after cleaning
             if (cleanedLine && !cleanedLine.match(/^\[.*\]$/)) { // Skip lines like [Music] or [Applause] if desired
               currentText += cleanedLine + ' ';
@@ -138,6 +140,8 @@ const ccToMarkdownPlugin = {
     let output = text;
     // Remove HTML tags
     output = output.replace(/<[^>]+(>|$)/g, '');
+    // Remove &nbsp; specifically
+    output = output.replace(/&nbsp;/g, ' ');
     // Remove HTML entities
     output = output.replace(/&[^;]+;/g, '');
     // Remove multiple spaces
@@ -1880,8 +1884,14 @@ const ccToMarkdownPlugin = {
     // Remove any remaining HTML tags
     cleaned = cleaned.replace(/<[^>]*>/g, '');
     
+    // Remove &nbsp; specifically
+    cleaned = cleaned.replace(/&nbsp;/g, ' ');
+    
     // Remove annotations like [Music] anywhere in the text but preserve speaker indicators
     cleaned = cleaned.replace(/\[[^\]]*\]/g, '');
+    
+    // Remove any additional HTML entities
+    cleaned = cleaned.replace(/&[^;]+;/g, '');
     
     // Handle speaker indicators - preserve them for context
     // Examples: "SHAREEDUH MCGEE:", "- (CHANTING)", etc.
