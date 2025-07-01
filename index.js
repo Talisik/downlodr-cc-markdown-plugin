@@ -1872,7 +1872,7 @@ const ccToMarkdownPlugin = {
     
     // Remove all HTML-like tags including VTT-specific formatting
     cleaned = cleaned.replace(/<[^>]*>/g, '');
-    
+    // test
     // Remove timestamps inside text like <00:00:16.520>
     cleaned = cleaned.replace(/<\d+:\d+:\d+\.\d+>/g, '');
     
