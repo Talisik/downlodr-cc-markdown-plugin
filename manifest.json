@@ -1,12 +1,11 @@
 {
-    "id": "com.example.cctomarkdown",
-    "name": "CC to Markdown",
-    "version": "2.0.0",
-    "description": "The CC to Markdown plugin automatically detects `.vtt` (WebVTT) closed caption files inside downloaded video directories and converts them into clean, readable Markdown or plain text.\n\nIt features smart formatting that:\n- Automatically detects and formats headings and paragraphs\n- Removes timestamps and speaker labels\n- Outputs clean, structured text ideal for notes, summaries, or documentation\n\nPerfect for turning video subtitles into readable, searchable content.",
-    "main": "index.js",
-    "author": "Downlodr",
-    "license": "MIT",
-    "minAppVersion": "1.3.4",
-    "icon": "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.77778 0C1.28889 0 0.888889 0.18 0.524444 0.57C0.177778 0.96 0 1.44 0 2V14C0 14.56 0.177778 15.04 0.524444 15.43C0.888889 15.82 1.28889 16 1.77778 16H14.2222C14.6667 16 15.1111 15.81 15.4578 15.41C15.8222 15 16 14.53 16 14V2C16 1.47 15.8222 1 15.4578 0.59C15.1111 0.19 14.6667 0 14.2222 0H1.77778ZM1.33333 1.5H14.6667V14.5H1.33333V1.5ZM3.55556 5C3.28889 5 3.08444 5.09 2.91556 5.28C2.74667 5.47 2.66667 5.7 2.66667 6V10C2.66667 10.3 2.74667 10.53 2.91556 10.72C3.08444 10.91 3.28889 11 3.55556 11H6.22222C6.46222 11 6.66667 10.91 6.85333 10.72C7.03111 10.53 7.11111 10.3 7.11111 10V9H5.77778V9.5H4V6.5H5.77778V7H7.11111V6C7.11111 5.7 7.03111 5.47 6.85333 5.28C6.66667 5.09 6.46222 5 6.22222 5H3.55556ZM9.77778 5C9.53778 5 9.33333 5.09 9.14667 5.28C8.96889 5.47 8.88889 5.7 8.88889 6V10C8.88889 10.3 8.96889 10.53 9.14667 10.72C9.33333 10.91 9.53778 11 9.77778 11H12.4444C12.7111 11 12.9156 10.91 13.0844 10.72C13.2533 10.53 13.3333 10.3 13.3333 10V9H12V9.5H10.2222V6.5H12V7H13.3333V6C13.3333 5.7 13.2533 5.47 13.0844 5.28C12.9156 5.09 12.7111 5 12.4444 5H9.77778Z\" fill=\"currentColor\"/></svg>"
-
-  }
+  "id": "com.example.cctomarkdown",
+  "name": "CC to Markdown",
+  "version": "2.0.0",
+  "description": "Convert video captions into markdown documents.\nThe CC to Markdown plugin automatically detects `.vtt` (WebVTT) closed caption files inside downloaded video directories and converts them into clean, readable Markdown or plain text.\n\nIt features smart formatting that:\n- Automatically detects and formats headings and paragraphs\n- Removes timestamps and speaker labels\n- Outputs clean, structured text ideal for notes, summaries, or documentation\n\nPerfect for turning video subtitles into readable, searchable content.",
+  "main": "index.js",
+  "author": "Downlodr",
+  "license": "MIT",
+  "minAppVersion": "1.3.4",
+  "icon": "<svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.77778 0C1.28889 0 0.888889 0.18 0.524444 0.57C0.177778 0.96 0 1.44 0 2V14C0 14.56 0.177778 15.04 0.524444 15.43C0.888889 15.82 1.28889 16 1.77778 16H14.2222C14.6667 16 15.1111 15.81 15.4578 15.41C15.8222 15 16 14.53 16 14V2C16 1.47 15.8222 1 15.4578 0.59C15.1111 0.19 14.6667 0 14.2222 0H1.77778ZM1.33333 1.5H14.6667V14.5H1.33333V1.5ZM3.55556 5C3.28889 5 3.08444 5.09 2.91556 5.28C2.74667 5.47 2.66667 5.7 2.66667 6V10C2.66667 10.3 2.74667 10.53 2.91556 10.72C3.08444 10.91 3.28889 11 3.55556 11H6.22222C6.46222 11 6.66667 10.91 6.85333 10.72C7.03111 10.53 7.11111 10.3 7.11111 10V9H5.77778V9.5H4V6.5H5.77778V7H7.11111V6C7.11111 5.7 7.03111 5.47 6.85333 5.28C6.66667 5.09 6.46222 5 6.22222 5H3.55556ZM9.77778 5C9.53778 5 9.33333 5.09 9.14667 5.28C8.96889 5.47 8.88889 5.7 8.88889 6V10C8.88889 10.3 8.96889 10.53 9.14667 10.72C9.33333 10.91 9.53778 11 9.77778 11H12.4444C12.7111 11 12.9156 10.91 13.0844 10.72C13.2533 10.53 13.3333 10.3 13.3333 10V9H12V9.5H10.2222V6.5H12V7H13.3333V6C13.3333 5.7 13.2533 5.47 13.0844 5.28C12.9156 5.09 12.7111 5 12.4444 5H9.77778Z\" fill=\"currentColor\"/></svg>"
+}

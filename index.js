@@ -1858,7 +1858,7 @@ const ccToMarkdownPlugin = {
   /**
    * Clean a single line of VTT text
    * @param {string} line - The line to clean
-   * @returns {string} - Cleaned text
+   * @returns {string} - Cleaned text 
    */
   cleanTextLine(line) {
     if (!line) return '';
