@@ -1,13 +1,100 @@
 const ccToMarkdownPlugin = {
   id: 'cctomarkdown',
   name: 'CC to Markdown',
-  version: '2.0.0',
+  version: '2.0.1',
   description: 'Convert video captions to document formats',
   author: 'Downlod',
   icon: '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M1.77778 0C1.28889 0 0.888889 0.18 0.524444 0.57C0.177778 0.96 0 1.44 0 2V14C0 14.56 0.177778 15.04 0.524444 15.43C0.888889 15.82 1.28889 16 1.77778 16H14.2222C14.6667 16 15.1111 15.81 15.4578 15.41C15.8222 15 16 14.53 16 14V2C16 1.47 15.8222 1 15.4578 0.59C15.1111 0.19 14.6667 0 14.2222 0H1.77778ZM1.33333 1.5H14.6667V14.5H1.33333V1.5ZM3.55556 5C3.28889 5 3.08444 5.09 2.91556 5.28C2.74667 5.47 2.66667 5.7 2.66667 6V10C2.66667 10.3 2.74667 10.53 2.91556 10.72C3.08444 10.91 3.28889 11 3.55556 11H6.22222C6.46222 11 6.66667 10.91 6.85333 10.72C7.03111 10.53 7.11111 10.3 7.11111 10V9H5.77778V9.5H4V6.5H5.77778V7H7.11111V6C7.11111 5.7 7.03111 5.47 6.85333 5.28C6.66667 5.09 6.46222 5 6.22222 5H3.55556ZM9.77778 5C9.53778 5 9.33333 5.09 9.14667 5.28C8.96889 5.47 8.88889 5.7 8.88889 6V10C8.88889 10.3 8.96889 10.53 9.14667 10.72C9.33333 10.91 9.53778 11 9.77778 11H12.4444C12.7111 11 12.9156 10.91 13.0844 10.72C13.2533 10.53 13.3333 10.3 13.3333 10V9H12V9.5H10.2222V6.5H12V7H13.3333V6C13.3333 5.7 13.2533 5.47 13.0844 5.28C12.9156 5.09 12.7111 5 12.4444 5H9.77778Z"/></svg>',
 
   menuItemIds: [],
   taskBarItemIds: [],
+
+  // Cross-platform path separator utilities
+  pathSeparator: '/',  // Default to Unix-style, will be overridden by context data
+  
+  /**
+   * Get the correct path separator from context data
+   * @param {Object} contextData - Context data containing separator info
+   * @returns {Promise<string>} - Path separator string
+   */
+  async getPathSeparator(contextData) {
+    try {
+      // Check if separatorType exists and is a Promise
+      if (contextData && contextData.seperatorType) {
+        if (contextData.seperatorType instanceof Promise) {
+          const separator = await contextData.seperatorType;
+          return separator || '/';
+        } else {
+          return contextData.seperatorType || '/';
+        }
+      }
+      
+      // Fallback based on osType
+      if (contextData && contextData.osType) {
+        return contextData.osType === 'windows' ? '\\' : '/';
+      }
+      
+      // Default fallback
+      return '/';
+    } catch (error) {
+      console.log('Error getting path separator, using default:', error);
+      return '/';
+    }
+  },
+  
+  /**
+   * Normalize path separators for the current OS
+   * @param {string} path - Path to normalize
+   * @param {string} separator - Target separator
+   * @returns {string} - Normalized path
+   */
+  normalizePath(path, separator = this.pathSeparator) {
+    if (!path) return '';
+    console.log(this.pathSeparator);
+    // Replace all separators with the target separator
+    const normalized = path.replace(/[\/\\]/g, separator);
+    
+    // Handle double separators that might have been created
+    const doubleSeparatorRegex = new RegExp(`\\${separator}\\${separator}`, 'g');
+    return normalized.replace(doubleSeparatorRegex, separator);
+  },
+  
+  /**
+   * Get the last separator index in a path (cross-platform)
+   * @param {string} path - Path to analyze
+   * @returns {number} - Index of last separator or -1
+   */
+  getLastSeparatorIndex(path) {
+    if (!path) return -1;
+    return Math.max(path.lastIndexOf('\\'), path.lastIndexOf('/'));
+  },
+  
+  /**
+   * Ensure path ends with separator
+   * @param {string} path - Path to check
+   * @param {string} separator - Separator to use
+   * @returns {string} - Path with trailing separator
+   */
+  ensureTrailingSeparator(path, separator = this.pathSeparator) {
+    if (!path) return separator;
+    return path.endsWith('\\') || path.endsWith('/') ? path : path + separator;
+  },
+  
+  /**
+   * Get default download path based on OS
+   * @param {Object} contextData - Context data
+   * @returns {string} - Default download path
+   */
+  getDefaultDownloadPath(contextData) {
+    const separator = this.pathSeparator;
+    
+    if (contextData && contextData.osType === 'windows') {
+      return `C:${separator}Downloads${separator}`;
+    } else {
+      // Unix-like systems (Linux, macOS)
+      return `${separator}home${separator}Downloads${separator}`;
+    }
+  },
 
   // Conversion methods
   converters: {
@@ -186,6 +273,9 @@ const ccToMarkdownPlugin = {
    */
   async showCCPanel(contextData) {
     try {
+      // Get the correct path separator for this OS
+      this.pathSeparator = await this.getPathSeparator(contextData);
+      console.log('Using path separator:', JSON.stringify(this.pathSeparator));
       // File size formatter
       const formatFileSize = (bytes) => {
         if (!bytes) return '—';
@@ -275,7 +365,9 @@ const ccToMarkdownPlugin = {
       const currentFormat = 'txt';
       console.log(download.location);
       // Default save path
-      const defaultPath = `${download.location || this.api.system.getDefaultDownloadPath() || "C:\\Downloads\\"}${download.name.replace(/\.[^/.]+$/, "")}.${currentFormat}`;
+      const baseDownloadPath = download.location || this.api.system.getDefaultDownloadPath() || this.getDefaultDownloadPath(contextData);
+      const baseName = download.name.replace(/\.[^/.]+$/, "");
+      const defaultPath = `${this.ensureTrailingSeparator(baseDownloadPath)}${baseName}.${currentFormat}`;
       
       // Check if captions exist
       const captionContent = await this.getCaptionsForVideo(download.videoUrl, download.captionLocation);
@@ -345,7 +437,7 @@ const ccToMarkdownPlugin = {
             case 'browse':
               console.log('Browse button clicked, using format:', event.data.format || currentFormat);
               try {
-                const result = await this.showSaveFileDialog(download, event.data.format || currentFormat);
+                const result = await this.showSaveFileDialog(download, event.data.format || currentFormat, contextData);
                 
                 if (result) {
                   console.log('Selected save path:', result.filePath);
@@ -418,11 +510,11 @@ const ccToMarkdownPlugin = {
                 baseName = baseName.replace(/\.(mp4|mkv|avi|mov|wmv|flv|webm|m4v)$/i, ""); // Remove video extensions
                 
                 // Get directory
-                let directory = download.location || this.api.system?.getDefaultDownloadPath() || "C:\\Downloads\\";
+                let directory = download.location || this.api.system?.getDefaultDownloadPath() || this.getDefaultDownloadPath(contextData);
                 
                 // Extract directory from file path if needed
                 if (directory && (directory.includes('.mkv') || directory.includes('.mp4') || directory.includes('.avi') || directory.includes('.mov') || directory.includes('.wmv') || directory.includes('.flv') || directory.includes('.webm') || directory.includes('.m4v'))) {
-                  const lastSeparatorIndex = Math.max(directory.lastIndexOf('\\'), directory.lastIndexOf('/'));
+                  const lastSeparatorIndex = this.getLastSeparatorIndex(directory);
                   if (lastSeparatorIndex !== -1) {
                     directory = directory.substring(0, lastSeparatorIndex + 1);
                   }
@@ -430,7 +522,7 @@ const ccToMarkdownPlugin = {
                 }
                 
                 // Ensure directory ends with separator
-                const dirPath = directory.endsWith('\\') || directory.endsWith('/') ? directory : directory + '\\';
+                const dirPath = this.ensureTrailingSeparator(directory);
                 
                 // Create filename with correct extension
                 const filename = `${baseName}.${format}`;
@@ -445,7 +537,7 @@ const ccToMarkdownPlugin = {
               console.log('Converting to format:', format);
               console.log('Final save path:', savePath);
 
-              await this.handleConvertAction(download, format, savePath, panelId);
+              await this.handleConvertAction(download, format, savePath, panelId, contextData);
               
               // Show success popup
               window.postMessage({
@@ -492,7 +584,7 @@ const ccToMarkdownPlugin = {
           case 'open-folder':
             try {
               const fullPath = event.data.savePath;
-              const lastSeparatorIndex = Math.max(fullPath.lastIndexOf('\\'), fullPath.lastIndexOf('/'));
+              const lastSeparatorIndex = this.getLastSeparatorIndex(fullPath);
               const directory = lastSeparatorIndex !== -1 ? fullPath.substring(0, lastSeparatorIndex + 1) : '';
               
               await window.downlodrFunctions.openFolder(directory, fullPath);
@@ -1309,10 +1401,10 @@ const ccToMarkdownPlugin = {
             return '';
         }
         
-        // Normalize the path to fix double backslashes caused by JSON.stringify/parse
+        // Normalize the path to fix double separators caused by JSON.stringify/parse
         if (typeof filePath === 'string') {
-            // Replace any escaped backslashes (\\) with single backslashes (\)
-            filePath = filePath.replace(/\\\\/g, '\\');
+            // Use the normalizePath function for cross-platform compatibility
+            filePath = this.normalizePath(filePath, this.pathSeparator);
             console.log('Normalized file path:', filePath);
         }
         
@@ -1620,8 +1712,9 @@ const ccToMarkdownPlugin = {
    * @param {string} format - The selected format
    * @param {string} savePath - The path to save the file
    * @param {string} panelId - ID of the panel triggering the action
+   * @param {Object} contextData - Context data containing OS and separator info
    */
-  async handleConvertAction(download, format, savePath, panelId) {
+  async handleConvertAction(download, format, savePath, panelId, contextData) {
     try {
       console.log(`Starting conversion with panelId: ${panelId}`);
       
@@ -1695,9 +1788,10 @@ const ccToMarkdownPlugin = {
    * Show save file dialog
    * @param {Object} download - Download object with file info
    * @param {string} format - Target format ('txt' or 'docx')
+   * @param {Object} contextData - Context data containing OS and separator info
    * @returns {Promise<Object|null>} - File path result or null
    */
-  async showSaveFileDialog(download, format) {
+  async showSaveFileDialog(download, format, contextData) {
     try {
       // Dynamic filters based on format and DOCX availability
       let filters = [{ name: 'Text Files', extensions: ['txt'] }];
@@ -1726,7 +1820,7 @@ const ccToMarkdownPlugin = {
       
       // If download has a location, use it as the directory
       if (download.location) {
-        defaultPath = `${download.location}/${defaultFilename}`;
+        defaultPath = `${this.ensureTrailingSeparator(download.location)}${defaultFilename}`;
       }
       
       console.log('Base name:', baseName);
