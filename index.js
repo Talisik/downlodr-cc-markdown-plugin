@@ -364,8 +364,14 @@ const ccToMarkdownPlugin = {
       // Only supporting TXT now
       const currentFormat = 'txt';
       console.log(download.location);
-      // Default save path
-      const baseDownloadPath = download.location || this.api.system.getDefaultDownloadPath() || this.getDefaultDownloadPath(contextData);
+      // Default save path — extract directory if location is a full file path
+      let baseDownloadPath = download.location || this.api.system.getDefaultDownloadPath() || this.getDefaultDownloadPath(contextData);
+      if (baseDownloadPath && /\.(mp4|mkv|avi|mov|wmv|flv|webm|m4v)$/i.test(baseDownloadPath)) {
+        const lastSepIdx = this.getLastSeparatorIndex(baseDownloadPath);
+        if (lastSepIdx !== -1) {
+          baseDownloadPath = baseDownloadPath.substring(0, lastSepIdx + 1);
+        }
+      }
       const baseName = download.name.replace(/\.[^/.]+$/, "");
       const defaultPath = `${this.ensureTrailingSeparator(baseDownloadPath)}${baseName}.${currentFormat}`;
       
@@ -534,6 +540,9 @@ const ccToMarkdownPlugin = {
                 console.log('Filename:', filename);
               }
               
+              // Ensure file extension always matches the selected format
+              savePath = savePath.replace(/\.[^/.]+$/, '') + '.' + format;
+
               console.log('Converting to format:', format);
               console.log('Final save path:', savePath);
 
@@ -1073,7 +1082,7 @@ const ccToMarkdownPlugin = {
                           panelId: '${panelId}', 
                           action: 'convert',
                           format: document.querySelector('.format-option.selected')?.dataset.format || 'txt',
-                          savePath: document.getElementById('savePath')?.innerText || '${defaultPath}'
+                          savePath: currentSavePath
                         }, '*')">
                   Convert to <span id="convertFormatText">TXT</span>
                 </button>
@@ -1082,9 +1091,13 @@ const ccToMarkdownPlugin = {
           
           <script>
 
+          // Track the actual save path in a JS variable to avoid HTML space collapsing
+          let currentSavePath = '${defaultPath.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}';
+
           window.addEventListener('message', function(event) {
   const data = event.data;
   if (data && data.action === 'update-save-path' && data.panelId === '${panelId}') {
+    currentSavePath = data.path;
     // Update just the save path element
     const pathElement = document.getElementById('savePath');
     if (pathElement) {
@@ -1819,9 +1832,16 @@ const ccToMarkdownPlugin = {
       const defaultFilename = `${baseName}.${defaultExtension}`;
       let defaultPath = defaultFilename;
       
-      // If download has a location, use it as the directory
+      // If download has a location, use it as the directory (extract dir if it's a file path)
       if (download.location) {
-        defaultPath = `${this.ensureTrailingSeparator(download.location)}${defaultFilename}`;
+        let downloadDir = download.location;
+        if (/\.(mp4|mkv|avi|mov|wmv|flv|webm|m4v)$/i.test(downloadDir)) {
+          const lastSepIdx = this.getLastSeparatorIndex(downloadDir);
+          if (lastSepIdx !== -1) {
+            downloadDir = downloadDir.substring(0, lastSepIdx + 1);
+          }
+        }
+        defaultPath = `${this.ensureTrailingSeparator(downloadDir)}${defaultFilename}`;
       }
       
       console.log('Base name:', baseName);
