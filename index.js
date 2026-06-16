@@ -1075,7 +1075,7 @@ const ccToMarkdownPlugin = {
                           format: document.querySelector('.format-option.selected')?.dataset.format || 'txt',
                           savePath: document.getElementById('savePath')?.innerText || '${defaultPath}'
                         }, '*')">
-                  Convert to TXT
+                  Convert to <span id="convertFormatText">TXT</span>
                 </button>
               </div>
             </div>
@@ -1122,6 +1122,7 @@ const ccToMarkdownPlugin = {
               
               // Update visual feedback - change button text to show selected format
               document.getElementById('convertBtn').textPath = 'Convert to ' + format.toUpperCase();
+              document.getElementById('convertFormatText').textContent = format.toUpperCase();
               
               // Update file path display if needed
               const pathElement = document.getElementById('savePath');
@@ -1144,7 +1145,7 @@ const ccToMarkdownPlugin = {
               const pathElement = document.getElementById('successPath');
               
               if (popup && messageElement && pathElement) {
-                messageElement.textContent = \`Your transcript has been successfully converted and saved as a well-formatted txt.\`;
+                messageElement.textContent = \`Your transcript has been successfully converted and saved.\`;
                 pathElement.textContent = \`Open File\`;
                 pathElement.textPath = savePath;
                 popup.classList.add('show');
