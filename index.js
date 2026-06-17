@@ -641,23 +641,24 @@ const ccToMarkdownPlugin = {
             }
             
             .panel-footer {
-              background: var(--bg-secondary);
-              padding: 10px 20px;
-              border-top: 1px solid var(--border-primary);
+              background: var(--bg-footer);
+              padding: 5px 20px;
+
+              border-bottom-left-radius: 8px;
+              border-bottom-right-radius: 8px;
               flex-shrink: 0;
             }
             
             .cc-panel h3 {
               font-size: 13px;
               font-weight: 600;
-              margin-top: 10px;
+              margin-top: 16px;
               margin-bottom: 8px;
               color: var(--text-primary);
             }
             .file-info {
-              margin-bottom: 10px;
+              margin-bottom: 16px;
               background-color: var(--bg-secondary);
-              border: 1px solid var(--border-primary);
               padding: 12px;
               border-radius: 8px;
             }
@@ -667,13 +668,12 @@ const ccToMarkdownPlugin = {
               justify-content: space-between;
             }
             .file-info-label {
-              font-size: 13px;
-              color: var(--text-secondary);
+              font-size: 12px;
+              color: var(--text-info-label);
             }
             .file-info-value {
-              font-size: 13px;
-              color: var(--text-primary);
-              font-weight: 500;
+              font-size: 12px;
+              color: var(--text-info-value);
             }
             .format-options {
               display: flex;
@@ -683,7 +683,6 @@ const ccToMarkdownPlugin = {
             .format-option {
               flex: 1;
               padding: 15px 5px;
-              border: 1px solid #ddd;
               border-radius: 4px;
               text-align: center;
               cursor: pointer;
@@ -760,6 +759,7 @@ const ccToMarkdownPlugin = {
             }
             .progress-container {
               margin-top: 15px;
+              margin-bottom: 12px;
             }
             .progress-bar {
               height: 6px;
@@ -790,9 +790,8 @@ const ccToMarkdownPlugin = {
             }
             .action-buttons {
               display: flex;
-              justify-content: space-between;
-              margin-top: 10px;
-              margin-bottom: 10px;
+              margin-top: 4px;
+              margin-bottom: 4px;
               gap: 10px;
             }
             .btn {
@@ -901,7 +900,7 @@ const ccToMarkdownPlugin = {
               z-index: 1000;
               display: none;
               animation: slideInFromTop 0.4s ease-out;
-              margin-bottom: 5px;
+              margin-bottom: 12px;
               margin-top: 10px;
             }
             
@@ -998,7 +997,7 @@ const ccToMarkdownPlugin = {
           <div class="cc-panel">
             <div class="panel-content">
               <div class="file-info">
-                <div class="file-info-row" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-height: 2.8em; line-height: 1.4em; font-weight: bold; padding-top: 5px; padding-bottom: 10px; word-break: break-word; white-space: normal !important;">
+                <div class="file-info-row" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-height: 2.8em; line-height: 1.4em; font-size: 13px; font-weight: 600; padding-top: 5px; padding-bottom: 10px; word-break: break-word; white-space: normal !important;">
                   <div style="width: 100%; max-width: 100%; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
                     ${download.name || 'Video'}
                   </div>
@@ -1084,7 +1083,7 @@ const ccToMarkdownPlugin = {
                           format: document.querySelector('.format-option.selected')?.dataset.format || 'txt',
                           savePath: currentSavePath
                         }, '*')">
-                  Convert to <span id="convertFormatText">TXT</span>
+                  Convert
                 </button>
               </div>
             </div>
